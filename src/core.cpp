@@ -1,11 +1,10 @@
 module;
 #include <boost/pfr.hpp>
-
-export module SERIALIZATION_LIBRARY_NAME.core;
+export module cserver.serialization.core;
 import std;
 import utempl;
 
-namespace SERIALIZATION_LIBRARY_NAME {
+namespace cserver {
 
 export template <typename T>
 concept Serializator = true;
@@ -173,7 +172,7 @@ struct SerializationConfig {
   template <utempl::ConstexprString Name>
   struct Info {
     static constexpr auto kName = Name;
-    static constexpr std::size_t kIndex = ::serialization::Find(boost::pfr::names_as_array<T>(), Name);
+    static constexpr std::size_t kIndex = ::cserver::Find(boost::pfr::names_as_array<T>(), Name);
     using Type = std::decay_t<decltype(boost::pfr::get<kIndex>(std::declval<T&>()))>;
   };
 
@@ -221,4 +220,4 @@ consteval auto CreateSerializationConfig() {
   } | utempl::kSeq<boost::pfr::tuple_size_v<T>>;
 };
 
-}  // namespace SERIALIZATION_LIBRARY_NAME
+}  // namespace cserver

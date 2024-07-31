@@ -1,11 +1,11 @@
 module;
 #include <gtest/gtest.h>
 export module tests.config;
-import serialization;
+import cserver.serialization;
 import std;
 import utempl;
 
-namespace serialization {
+namespace cserver {
 
 struct SomeStruct1 {
   std::optional<std::string_view> field;
@@ -73,4 +73,4 @@ TEST(Configuration, AttributesWithNestedType) {
   EXPECT_EQ(std::string_view{utempl::Get<0>(kSerialization<SomeStruct4>.configs).main.defaultValue}, std::string_view{"Hi!"});
 };
 
-}  // namespace serialization
+}  // namespace cserver

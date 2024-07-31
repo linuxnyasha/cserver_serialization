@@ -6,10 +6,10 @@ set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD
   # your CMake build for the exact value to use.
   "0e5b6991-d74f-4b3d-a41c-cf096e0b2508")
 
-project(serialization
+project(cserver_serialization
   VERSION 0.1
   LANGUAGES CXX)
-add_compile_definitions(SERIALIZATION_LIBRARY_NAME=serialization)
+
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)

@@ -1,3 +1,3 @@
-export module SERIALIZATION_LIBRARY_NAME;
-export import SERIALIZATION_LIBRARY_NAME.core;
-export import SERIALIZATION_LIBRARY_NAME.common_containers;
+export module cserver.serialization;
+export import cserver.serialization.core;
+export import cserver.serialization.common_containers;

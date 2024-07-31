@@ -1,10 +1,10 @@
-export module SERIALIZATION_LIBRARY_NAME.common_containers;
-import SERIALIZATION_LIBRARY_NAME.core;
+export module cserver.serialization.common_containers;
+import cserver.serialization.core;
 import fmt;
 import std;
 import utempl;
 
-namespace SERIALIZATION_LIBRARY_NAME {
+namespace cserver {
 
 template <typename T, typename To>
 concept OptionalDefault = std::same_as<T, Disabled> || std::convertible_to<T, std::optional<To>>;
@@ -20,4 +20,4 @@ struct FieldConfig<std::optional<T>> {
   };
 };
 
-}  // namespace SERIALIZATION_LIBRARY_NAME
+}  // namespace cserver
