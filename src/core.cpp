@@ -84,8 +84,8 @@ concept AttributeParameter = requires(T t) {
   { GetParameter(t, Disabled{}) } -> NonVoid;
 };
 
-export template <typename T, AttributeParameter... Ts>
-using Attributed = utempl::FieldAttribute<T, utempl::TypeList<Ts...>>;
+export template <typename T, typename Parameters, auto f = [] {}>
+using Attributed = utempl::FieldAttribute<T, Parameters, f>;
 
 export template <typename T, typename..., auto f = [] {}, auto R = utempl::OpenStruct<T, decltype(f)>()>
 consteval auto OpenStruct() {
@@ -161,9 +161,11 @@ struct SerializationConfig {
 
   static constexpr auto kAttributes = [] {
     if constexpr(utempl::HasAttributes<T>) {
-      return decltype(utempl::Get<0>(utempl::Get<0>(utempl::GetAttributes<T>()))){};
+      return utempl::GetAttributes<T>();
     } else {
-      return utempl::kTypeList<>;
+      return Map(utempl::GetIndexesTuple<boost::pfr::tuple_size_v<T>>(), [](auto) {
+        return utempl::kTypeList<>;
+      });
     };
   }();
 
@@ -193,7 +195,7 @@ struct SerializationConfig {
           return {utempl::kType<T>, std::forward<TTs>(args)...};
         }([&]<std::size_t II>(utempl::Wrapper<II> is, auto&& vs) {
                  if constexpr(I == II) {
-                   return TransformFieldConfig(kAttributes, std::move(value));
+                   return TransformFieldConfig(Get<*is>(kAttributes), std::move(value));
                  } else {
                    return std::move(vs);
                  };
@@ -202,21 +204,28 @@ struct SerializationConfig {
     });
   };
 };
+template <utempl::TupleLike Tuple>
+consteval auto ToTypeList(Tuple&&) {
+  return decltype(utempl::Unpack(std::declval<Tuple>(), []<typename... Ts>(Ts&&...) -> utempl::TypeList<Ts...> {})){};
+};
 
 export template <typename T>
 consteval auto CreateSerializationConfig() {
   static constexpr auto attributes = [] {
     if constexpr(utempl::HasAttributes<T>) {
-      return typename std::decay_t<decltype(utempl::Get<0>(utempl::GetAttributes<T>()))>::Type{};
+      return utempl::GetAttributes<T>();
     } else {
-      return utempl::kTypeList<>;
+      return Map(utempl::GetIndexesTuple<boost::pfr::tuple_size_v<T>>(), [](auto) {
+        return utempl::kTypeList<>;
+      });
     };
   }();
   return [](auto... is) {
     return SerializationConfig{
         utempl::kType<T>,
         TransformFieldConfig(
-            attributes, typename FieldConfig<std::decay_t<decltype(boost::pfr::get<*is>(std::declval<T&>()))>>::template Create<>{})...};
+            Get<*is>(attributes),
+            typename FieldConfig<std::decay_t<decltype(boost::pfr::get<*is>(std::declval<T&>()))>>::template Create<>{})...};
   } | utempl::kSeq<boost::pfr::tuple_size_v<T>>;
 };
 

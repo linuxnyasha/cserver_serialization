@@ -28,7 +28,7 @@ struct DefaultValue {
 
 struct SomeStruct2 {
   static_assert(OpenStruct<SomeStruct2>());
-  Attributed<std::optional<std::string_view>, DefaultValue> field;
+  Attributed<std::optional<std::string_view>, utempl::TypeList<DefaultValue>> field;
   static_assert(CloseStruct());
 };
 
@@ -42,7 +42,7 @@ TEST(Configuration, Attributes) {
 
 struct SomeStruct3 {
   static_assert(OpenStruct<SomeStruct3>());
-  Attributed<std::optional<std::string_view>, DefaultValue> field;
+  Attributed<std::optional<std::string_view>, utempl::TypeList<DefaultValue>> field;
   static_assert(CloseStruct());
 };
 
